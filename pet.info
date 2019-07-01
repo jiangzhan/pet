@@ -1,0 +1,4 @@
+name = Pet
+description = Provides the main pet listing page.
+core = 7.x
+package = Pet
