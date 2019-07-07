@@ -1,6 +1,13 @@
-export const getContent = () => dispatch => {
+export const getContent = (filter) => dispatch => {
   var url = '/api/pets';
-  fetch(url)
+  const formData = new FormData();
+  for (var key in filter) {
+    formData.append(key, filter[key]);
+  }
+  fetch(url, {
+    method: 'POST',
+    body: formData,
+  })
   .then(res => res.json())
   .then(data => {
     dispatch(receiveContent(data));
@@ -29,8 +36,7 @@ export const changeDropdown = function(e, key) {
 const CHANGE_DROPDOWN = 'CHANGE_DROPDOWN';
 const selectA = (e, key) => ({
   type: CHANGE_DROPDOWN,
-  //payload: {selectA: e.target.value},
-  payload: {key: 'selectA', value: e.target.value},
+  payload: {key: key, value: e.target.value},
   pushToUrl: {
     selectA: e.target.value
   }

@@ -20,20 +20,9 @@ function pet_menu() {
 }
 
 function pet_page_view() {
-  $filters = pet_get_filters();
-  $element = array(
-    '#type' => 'markup',
-    '#markup' => '<script type="text/javascript">window.filters = ' . drupal_json_encode($filters) . '</script>',
-  );
-  drupal_add_html_head($element, 'filter-json');
-  $element = array(
-    '#type' => 'markup',
-    '#markup' => '<script type="text/javascript">window.basepath = "/pets";</script>',
-  );
-  // drupal_add_html_head($element, 'basepath-url');
   $module_path = drupal_get_path('module', 'pet');
   drupal_add_js($module_path . '/theme/js/dist/bundle.js', ['type' => 'file', 'group' => 'theme', 'scope' => 'footer']);
-  drupal_add_css($module_path . '/theme/js/src/style.css', ['type' => 'file', 'group' => 'theme']);
+  drupal_add_css($module_path . '/theme/css/style.css', ['type' => 'file', 'group' => 'theme']);
   return [
     '#theme' => 'html_tag',
     '#tag' => 'div',
@@ -44,54 +33,18 @@ function pet_page_view() {
   ];
 }
 
-function pet_get_filters() {
-  return [
-    'search' => [
-      'type' => 'search',
-      'placeholder' => 'Filter by Keyword'
-    ],
-    'first' => [
-      'type' => 'select',
-      'options' => pet_taxonomy_to_options_category(1),
-      'placeholder' => 'Select Category',
-    ],
-    'second' => [
-      'type' => 'select',
-      'options' => pet_taxonomy_to_options_category(1),
-      'placeholder' => 'Select Category',
-    ],
-    'third' => [
-      'type' => 'select',
-      'options' => pet_taxonomy_to_options_category(1),
-      'placeholder' => 'Select Category',
-    ],
-  ];
-}
-
-function pet_taxonomy_to_options_category($vid) {
-  $output = [];
-  $tree = taxonomy_get_tree($vid);
-  foreach ($tree AS $term) {
-    $output[] = ['id' => (string) $term->tid, 'text' => $term->name];
-  }
-  return $output;
-}
-
 function pet_page_api() {
   $build = ['result' => []];
-  $nids = pet_query($_GET);
+  $nids = pet_query($_POST);
   $entities = node_load_multiple($nids['result']);
   foreach ($entities AS $entity) {
     $build['result'][] = ['id' => $entity->nid, 
       'title' => $entity->title, 
       'image' => file_create_url($entity->field_image['und'][0]['uri']),
-      'deleted' => FALSE,
       'tid' => $entity->field_category['und'][0]['tid'],
     ];
   }
   
-  $build['total'] = $nids['count'];
-  $build['page'] = !empty($_GET['page']) ? $_GET['page'] : 0;
   return $build;
 }
 
@@ -99,19 +52,35 @@ function pet_query(array $params) {
   $query = db_select('node', 'n');
   $query->addField('n', 'nid', 'nid');
   $query->join('field_data_field_image', 'i','i.entity_id = n.nid');
+  $select = [];
   foreach($params AS $key => $value) {
     switch($key) {
+      case 'selectA':
+        array_push($select, $value);
+      break;
+      case 'selectB':
+        array_push($select, $value);
+      break;
+      case 'selectC':
+        array_push($select, $value);
+      break;
       case 'search':
         $query->condition('n.title', '%' . $value . '%', 'LIKE');
-        break;
+      break;
     }
+  }
+  $implode = implode(',', $select);
+  $array_sum = array_sum($select);
+  if (!empty($select) && $array_sum > 0) {
+    $query ->addField('c', 'field_category_tid','field_category_tid');
+    $query->join('field_data_field_category', 'c', 'n.nid=c.entity_id');
+    $query->condition('c.field_category_tid', $select, 'in');
+    $query->orderBy("FIELD(field_category_tid, $implode)");
   }
   $query->condition('status', 1);
   $query->groupBy('n.nid');
-  $count_query = clone $query;
-  $count = ceil($count_query->execute()->rowCount() / 9);
-  $query->range($_GET['page'] * 9, 9);
-  return ['count' => $count, 'result' => $query->execute()->fetchCol()];
+
+  return ['result' => $query->execute()->fetchCol()];
 }
 
 function delete_post() {

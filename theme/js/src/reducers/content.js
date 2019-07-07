@@ -1,6 +1,6 @@
 import {LOCATION_CHANGE} from 'react-router-redux';
 import {getValueFromUrl} from '../utils/functions';
-
+import {browserHistory} from 'react-router';
 
 const selectA = getValueFromUrl('selectA');
 const selectB = getValueFromUrl('selectB');
@@ -20,39 +20,24 @@ export default function(state = initialState, action) {
     case 'GET_CONTENT':
       return {
         ...state,
-       items: action.payload
+        items: action.payload
       }
     case 'DELETE_POST':
       return {
-         ...state,
-         items: state.items.map(item =>
-           (item.id === action.payload)
-            ? {...item, deleted: !item.deleted}
-            : item
+        ...state,
+        items: state.items.map(item =>
+          (item.id === action.payload)
+          ? {...item, deleted: !item.deleted}
+          : item
       )}
     case 'CHANGE_DROPDOWN':
-          
-         const newState = {
-           ...state,
-           filters: state.filters.map(item =>
-             (item.key === action.payload.key)
-             ? {...item, value: action.payload.value }
-             : item
-           ),
-           items: state.items.map(item =>
-           item = {...item, deleted: true}
-           )
-         }
-         const newFilterdState = {
-           ...newState,
-           items: newState.items.map(item =>
-            (item.tid == newState.filters[0].value || item.tid == newState.filters[1].value || item.tid == newState.filters[2].value)?
-             {...item, deleted: false} : item
-           )
-         }
       return {
         ...state,
-        ...newFilterdState
+        filters: state.filters.map(item =>
+          (item.key === action.payload.key)
+          ? {...item, value: action.payload.value }
+          : item
+        )
       }
     default:
      return state;

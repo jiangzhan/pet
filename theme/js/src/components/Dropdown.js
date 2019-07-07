@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import content from '../reducers/content';
 import { connect } from 'react-redux';
 import { changeDropdown } from '../actions';
-/*
-const Post = ({ onClick, id, image, title}) => (
-  <div onClick={onClick}>
-    <span>{id}</span>
-    <span>{title}</span>
-    <img src={image}/>
-  </div>
-);*/
+
 class Dropdown extends Component {
   render() {
     return (

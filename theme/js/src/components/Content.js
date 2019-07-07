@@ -5,9 +5,6 @@ import { getContent, deletePost } from '../actions';
 import Post from './Post';
 
 class Content extends Component {
-  componentDidMount() {
-    this.props.getContent();
-  }
   render() {
     const contentItems = this.props.content.map((item, index) => (
       <Post key={index} 
@@ -16,8 +13,7 @@ class Content extends Component {
       />
     ));
     return (
-      <div>
-        <h1>Posts</h1>
+      <div className='flex'>
         {contentItems}
       </div>
     );
@@ -28,4 +24,5 @@ const mapStateToProps = state => ({
   content: state.content.items
 });
 
-export default connect(mapStateToProps, { getContent, deletePost })(Content);
+export default connect(mapStateToProps, { deletePost })(Content);
+

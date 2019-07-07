@@ -5,10 +5,18 @@ import { getContent } from '../actions';
 import { connect } from 'react-redux';
 import {browserHistory} from 'react-router';
 
-
 class App extends Component {
-  render() {
+  componentDidMount() {
+   const currentLon = browserHistory.getCurrentLocation();
+    var query = currentLon.query;
+    this.props.getContent(query);
+  }
+  componentWillUpdate() {
     const currentLon = browserHistory.getCurrentLocation();
+    var query = currentLon.query;
+    this.props.getContent(query);
+  }
+  render() {
     const dropDowns = this.props.dropdowns.map((item) => (
       <Dropdown key={item.key}
         index={item.key}
@@ -18,6 +26,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <div>
+          <div>Thank you for your consideration. Here is <a href="https://github.com/jiangzhan/pet" target="_blank">Github Repository</a>.</div>
           {dropDowns}
         </div>
         <Content />
