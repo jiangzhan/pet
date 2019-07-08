@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Content from './Content';
 import Dropdown from './Dropdown';
+import Search from './Search';
 import { getContent } from '../actions';
 import { connect } from 'react-redux';
 import {browserHistory} from 'react-router';
+import PropTypes from 'prop-types';
 
 class App extends Component {
   componentDidMount() {
@@ -18,7 +20,8 @@ class App extends Component {
   }
   render() {
     const dropDowns = this.props.dropdowns.map((item) => (
-      <Dropdown key={item.key}
+      <Dropdown 
+        key={item.key}
         index={item.key}
         value={item.value}
       />
@@ -28,6 +31,7 @@ class App extends Component {
         <div>
           <div>Thank you for your consideration. Here is <a href="https://github.com/jiangzhan/pet" target="_blank">Github Repository</a>.</div>
           {dropDowns}
+          <Search />
         </div>
         <Content />
       </React.Fragment>
@@ -36,7 +40,18 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  dropdowns: state.content.filters
+  dropdowns: state.filters.dropdowns
 });
 
-export default connect(mapStateToProps, { getContent})(App);
+App.propTypes = {
+  dropdowns: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ])
+  }).isRequired).isRequired,
+  getContent: PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps, {getContent})(App);

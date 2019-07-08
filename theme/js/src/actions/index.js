@@ -33,6 +33,19 @@ export const changeDropdown = function(e, key) {
   }
 }
 
+export const updateSearch = (e) => (dispatch) => {
+  return dispatch(search(e));
+}
+
+const UPDATE_SEARCH = 'UPDATE_SEARCH';
+const search = (e) => ({
+  type: UPDATE_SEARCH,
+  payload: e.target.value,
+  pushToUrl: {
+    search: e.target.value
+  }
+});
+
 const CHANGE_DROPDOWN = 'CHANGE_DROPDOWN';
 const selectA = (e, key) => ({
   type: CHANGE_DROPDOWN,

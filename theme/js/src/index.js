@@ -7,8 +7,7 @@ import { Router, browserHistory, Route } from 'react-router';
 import thunk from 'redux-thunk';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import urlSyncMiddleware from './middlewares/urlSync';
-import content from './reducers/content';
-import {routerReducer} from 'react-router-redux';
+import rootReducer from './reducers';
 import {createLogger} from 'redux-logger';
 
 const devLogger = createLogger({
@@ -20,10 +19,7 @@ const middleware = [routerMiddleware(browserHistory), urlSyncMiddleware, devLogg
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
-  combineReducers({
-    routing: routerReducer,
-    content: content
-  }), 
+  rootReducer,
   composeEnhancers(
   applyMiddleware(...middleware)
 ));

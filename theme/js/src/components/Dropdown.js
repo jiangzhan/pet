@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import content from '../reducers/content';
 import { connect } from 'react-redux';
 import { changeDropdown } from '../actions';
+import PropTypes from 'prop-types';
 
 class Dropdown extends Component {
   render() {
@@ -15,4 +15,13 @@ class Dropdown extends Component {
     );
   }
 }
+
+Dropdown.propTypes = {
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
+  changeDropdown: PropTypes.func.isRequired
+}
+
 export default connect(null, { changeDropdown })(Dropdown);
