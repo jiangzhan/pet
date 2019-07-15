@@ -80,6 +80,7 @@ export const deletePost = postId => dispatch => {
     method: 'POST',
     body: formData,
   })
+  .then(res => res.json()) // parses JSON response into native JavaScript objects 
   .then(data => dispatch({
      type: DELETE_POST,
      payload: postId

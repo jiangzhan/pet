@@ -84,10 +84,6 @@ function pet_query(array $params) {
 }
 
 function delete_post() {
-  //required headers
-  header("Access-Control-Allow-Origin: *");
-  header("Content-Type: application/json; charset=UTF-8");
-  header("Access-Control-Allow-Credentials : true");
   if (empty($_POST['id'])) {
     echo json_encode(
       array("message"=>"Unable to delete product.")
@@ -97,4 +93,5 @@ function delete_post() {
   $query = db_delete('node')
     ->condition('nid', $_POST['id'], '=');
   $result = $query->execute();
+  return ['message' => "deleted"];
 }
