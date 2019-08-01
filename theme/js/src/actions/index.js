@@ -11,7 +11,8 @@ export const getContent = (filter) => dispatch => {
   .then(res => res.json())
   .then(data => {
     dispatch(receiveContent(data));
-  });
+  })
+  .catch(error => console.error('Error:', error));
 }
 
 const GET_CONTENT = 'GET_CONTENT';
@@ -80,10 +81,12 @@ export const deletePost = postId => dispatch => {
     method: 'POST',
     body: formData,
   })
+  .then(res => res.json()) // parses JSON response into native JavaScript objects 
   .then(data => dispatch({
      type: DELETE_POST,
      payload: postId
-  }));
+  }))
+  .catch(error => console.error('Error:', error));
 }
 
 
