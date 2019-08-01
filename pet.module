@@ -56,11 +56,7 @@ function pet_query(array $params) {
   foreach($params AS $key => $value) {
     switch($key) {
       case 'selectA':
-        array_push($select, $value);
-      break;
       case 'selectB':
-        array_push($select, $value);
-      break;
       case 'selectC':
         array_push($select, $value);
       break;
